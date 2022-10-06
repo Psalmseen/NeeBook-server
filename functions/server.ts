@@ -11,4 +11,11 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('/json', (req, res) => {
+  res.json({
+    auth: 'Oyebamiji Samson',
+    path: '/json',
+  });
+});
+
 export const handler = serverless(app);
