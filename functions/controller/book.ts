@@ -23,24 +23,24 @@ export const getBooksCategories = async (
     const getItemsInGenre = (genre: string) =>
       allBooks.filter((el) => el.genre.includes(genre));
 
-    const category = {
-      bestSellers: allBooks
-        .map((el) => el)
-        .sort((x, y) => (x.rents > y.rents ? -1 : 1))
-        .slice(0, 10),
-      horror: getItemsInGenre('Horror'),
-      thriller: getItemsInGenre('Thriller'),
-      romance: getItemsInGenre('Romance'),
-      comedy: getItemsInGenre('Comedy'),
-    };
+    const category = [
+      {
+        name: 'Best sellers',
+        value: allBooks
+          .map((el) => el)
+          .sort((x, y) => (x.rents > y.rents ? -1 : 1))
+          .slice(0, 10),
+      },
+      { name: 'Horror', value: getItemsInGenre('Horror') },
+      { name: 'Thriller', value: getItemsInGenre('Thriller') },
+      { name: 'Comedy', value: getItemsInGenre('Comedy') },
+    ];
 
-    res
-      .status(200)
-      .json({
-        status: 200,
-        message: 'Successfully fetched movies by category',
-        data: category,
-      });
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully fetched movies by category',
+      data: category,
+    });
   } catch (err) {}
 };
 export const postBook = async (
