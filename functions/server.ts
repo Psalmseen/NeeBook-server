@@ -3,13 +3,12 @@ import serverless from 'serverless-http';
 import { router } from './routes/route';
 import mongoose from 'mongoose';
 import env from 'dotenv';
-import { createModuleResolutionCache } from 'typescript';
 env.config();
 const app = express();
 
-app.use(router);
 app.use(express.json());
 
+app.use(router);
 let conn: any = null;
 
 export const connect = async () => {
