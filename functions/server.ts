@@ -16,8 +16,7 @@ export const connect = async () => {
   if (conn === null) {
     conn = mongoose
       .connect(
-        `mongodb+srv://Psalmseen:Psalmseen7268@neebook.qf0bqxs.mongodb.net/book-store?retryWrites=true&w=majority`,
-        // `mongodb+srv://Psalmseen:${process.env.DB_PASSWORD}@neebook.qf0bqxs.mongodb.net/${process.env.DB_COLLECTION}?retryWrites=true&w=majority`,
+        `mongodb+srv://Psalmseen:${process.env.DB_PASSWORD}@neebook.qf0bqxs.mongodb.net/${process.env.DB_COLLECTION}?retryWrites=true&w=majority`,
         { serverSelectionTimeoutMS: 5000 }
       )
       .then(() => mongoose);
