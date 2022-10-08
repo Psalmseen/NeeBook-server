@@ -4,10 +4,12 @@ import { router } from './routes/route';
 import mongoose from 'mongoose';
 import env from 'dotenv';
 import path from 'path';
+import cors from 'cors';
 env.config();
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 app.use(router);
 app.use(
