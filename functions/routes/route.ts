@@ -1,7 +1,13 @@
 import { Router } from 'express';
-import { getBooks, getBooksCategories, postBook } from '../controller/book';
+import {
+  getBookController,
+  getBooksController,
+  getBooksCategoriesController,
+  postBookController,
+} from '../controller/book';
 export const router = Router();
 
-router.get('/books/category', getBooksCategories);
-router.get('/books', getBooks);
-router.post('/book', postBook);
+router.get('/books/category', getBooksCategoriesController);
+router.get('/books', getBooksController);
+router.post('/book', postBookController);
+router.get('/book/:id', getBookController);

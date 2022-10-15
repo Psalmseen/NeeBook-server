@@ -1,25 +1,25 @@
 import { Request, Response, NextFunction } from 'express';
 import Book from '../model/book';
-export const getBooks = async (
+export const getBooksController = async (
   _: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const book = await Book.find({}, { _id: 0 });
+    const book = await Book.find({});
     res.status(200).json({ message: 'Successful', status: 200, data: book });
   } catch (error) {
     next(error);
   }
 };
 
-export const getBooksCategories = async (
+export const getBooksCategoriesController = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const allBooks = await Book.find({}, { _id: 0 });
+    const allBooks = await Book.find({});
     const getItemsInGenre = (genre: string) =>
       allBooks.filter((el) => el.genre.includes(genre));
 
@@ -43,7 +43,7 @@ export const getBooksCategories = async (
     });
   } catch (err) {}
 };
-export const postBook = async (
+export const postBookController = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -79,4 +79,20 @@ export const postBook = async (
   } catch (err) {
     throw err;
   }
+};
+
+export const getBookController = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+
+  const book = await Book.findById(id);
+
+  if (!book) {
+    return res.status(404).json({ message: 'Book not found' });
+  }
+
+  res.status(200).json({ message: 'Successful', data: book });
 };
