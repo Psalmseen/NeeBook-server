@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction } from 'express';
 import serverless from 'serverless-http';
 import { router } from './routes/routeRoutes';
 import { authRouter } from './routes/authRoutes';
@@ -21,6 +21,9 @@ app.use(
   '/images',
   express.static(path.join(__dirname, '..', '..', '..', '..', '..', 'images'))
 );
+app.use((err: any, req: any, res: any, next: any) => {
+  res.status(500).json({ message: err });
+});
 let conn: any = null;
 
 export const connect = async () => {
