@@ -26,8 +26,8 @@ export const signupController = async (
       lastName,
       email: email.toLowerCase(),
       password: encryptedPassword,
+      accessToken: '',
     });
-    await user.save();
     const accessToken = jwt.sign(
       { userId: user._id },
       process.env.JWT_ACCESS_TOKEN_SECRET as Secret
