@@ -1,6 +1,7 @@
 import express from 'express';
 import serverless from 'serverless-http';
-import { router } from './routes/route';
+import { router } from './routes/routeRoutes';
+import { authRouter } from './routes/authRoutes';
 import mongoose from 'mongoose';
 import env from 'dotenv';
 import path from 'path';
@@ -15,6 +16,7 @@ app.use(cookieParser());
 app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 
 app.use(router);
+app.use('/auth', authRouter);
 app.use(
   '/images',
   express.static(path.join(__dirname, '..', '..', '..', '..', '..', 'images'))
