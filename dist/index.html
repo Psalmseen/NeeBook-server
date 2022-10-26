@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Neebook Server</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: poppins;
+        font-size: 1.2rem;
+        padding: 2rem;
+      }
+      .table {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr) 4fr;
+        max-width: 99vw;
+      }
+      .table h3 {
+        text-transform: capitalize;
+        font-size: 1.6rem;
+        color: #3b8069;
+        font-family: lora;
+      }
+      .table > *:nth-child(-n + 4) {
+        border-top: 1px solid #2fb3ff;
+      }
+      .table > *:nth-child(4n + 1) {
+        border-left: 1px solid #2fb3ff;
+      }
+      .table > * {
+        border-right: 1px solid #2fb3ff;
+        border-bottom: 1px solid #2fb3ff;
+        padding: 1rem;
+      }
+      .main,
+      .title {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: #3b8069;
+      }
+      .title {
+        font-size: 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="main">Neebook Server</h1>
+    <p class="title">Welcome to the landing page of the Neebook server</p>
+    <div class="table">
+      <h3>Routes</h3>
+      <h3>Method</h3>
+      <h3>body requirement</h3>
+      <h3>Description</h3>
+    </div>
+
+    <script>
+      const routes = [
+        {
+          path: '/books',
+          method: 'Get',
+          req: 'Nil',
+          desc: 'This is the route for getting all the books from the Neebook server',
+        },
+        {
+          path: '/books/category',
+          method: 'Get',
+          req: 'Nil',
+          desc: 'This is the route that gets the book and sort them into categories ie Bestseller, thriller, horror comedy etc',
+        },
+        {
+          path: '/book/:id',
+          method: 'Get',
+          req: 'Nil',
+          desc: "This is the route for getting a book by its id eg. '/book/634035840c1541b31d3a9163' will return a book with id '634035840c1541b31d3a9163' ",
+        },
+        {
+          path: '/signup',
+          method: 'Post',
+          req: 'firstname, lastname, email, password',
+          desc: 'This is the router to sign up the user to the Neebook application',
+        },
+        {
+          path: '/login',
+          method: 'Post',
+          req: 'email, password',
+          desc: 'This is the router to login user to the Neebook application',
+        },
+      ];
+      const table = document.querySelector('.table');
+      table.innerHTML += routes
+        .map(
+          ({ path, method, req, desc }) =>
+            `<div>${path}</div> <div>${method}</div> <div>${req}</div><div>${desc}</div>`
+        )
+        .join('');
+    </script>
+  </body>
+</html>

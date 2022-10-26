@@ -1,4 +1,4 @@
-import express, { NextFunction } from 'express';
+import express from 'express';
 import serverless from 'serverless-http';
 import { router } from './routes/routeRoutes';
 import { authRouter } from './routes/authRoutes';
@@ -21,6 +21,14 @@ app.use(
   '/images',
   express.static(path.join(__dirname, '..', '..', '..', '..', '..', 'images'))
 );
+app.get('/', (_, res) => {
+  res.sendFile(
+    path.join(__dirname, '..', '..', '..', '..', '..', 'dist', 'index.html')
+  );
+});
+app.use('*', (_, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
 app.use((err: any, req: any, res: any, next: any) => {
   res.status(500).json({ message: err });
 });

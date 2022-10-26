@@ -86,6 +86,7 @@ export const loginController = async (
       .status(200)
       .json({ messgae: 'Login successful', user: { ...frontendUser } });
   } catch (error) {
+    console.log(error);
     next(error);
   }
 };
