@@ -62,11 +62,11 @@ export const loginController = async (
   try {
     const user = await User.findOne({ email: email.toLowerCase() });
     if (!user) {
-      return res.status(403).json({ message: 'Email or password incorrect' });
+      return res.status(403).json({ message: 'Email incorrect' });
     }
     const isEqual = await bcrypt.compare(password, user.password as string);
     if (!isEqual) {
-      return res.status(403).json({ message: 'Email or password incorrect' });
+      return res.status(403).json({ message: 'Password incorrect' });
     }
     const accessToken = jwt.sign(
       { userId: user._id },
