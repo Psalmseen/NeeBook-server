@@ -42,7 +42,9 @@ export const signupController = async (
       password: userPassword,
       ...frontendUser
     } = user.toJSON();
-    res.status(200).json({ message: 'Successful', user: { ...frontendUser } });
+    res
+      .status(200)
+      .json({ message: 'Successful', user: { ...frontendUser, accessToken } });
   } catch (error) {
     console.log(error);
   }
