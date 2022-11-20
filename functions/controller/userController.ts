@@ -84,14 +84,17 @@ export const loginController = async (
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
     });
-    res
-      .status(200)
-      .json({
-        message: 'Login successful',
-        user: { ...frontendUser, accessToken },
-      });
+    res.status(200).json({
+      message: 'Login successful',
+      user: { ...frontendUser, accessToken },
+    });
   } catch (error) {
     console.log(error);
     next(error);
   }
+};
+
+export const checkAccessTokenController = async (req: any, res: any) => {
+  const { accessToken } = req.cookie;
+  res.status(200).json({ accessToken });
 };
