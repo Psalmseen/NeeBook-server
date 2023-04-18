@@ -1,13 +1,24 @@
 import { Request, Response, NextFunction } from 'express';
 import Book from '../model/bookModel';
 export const getBooksController = async (
-  _: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
+  const { name: query } = req.query;
+  console.log(query);
+
   try {
     const book = await Book.find({});
-    res.status(200).json({ message: 'Successful', status: 200, data: book });
+    res.status(200).json({
+      message: 'Successful',
+      status: 200,
+      data: query
+        ? book.filter(({ title }) =>
+            title.toLowerCase().includes(query.toString().toLowerCase())
+          )
+        : book,
+    });
   } catch (error) {
     next(error);
   }

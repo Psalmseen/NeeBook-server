@@ -8,7 +8,9 @@ export const isAuthorized = async (
   next: NextFunction
 ) => {
   const { accessToken } = req.cookies;
+
   const user = await User.findOne({ accessToken });
+
   if (!user) {
     return res
       .status(403)

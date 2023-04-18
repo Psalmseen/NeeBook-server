@@ -97,6 +97,18 @@
           req: 'email, password',
           desc: 'This is the router to login user to the Neebook application',
         },
+        {
+          path: '/auth/logout',
+          method: 'Post',
+          req: 'Nil',
+          desc: 'This is the logout route',
+        },
+        {
+          path: '/auth/update-profile',
+          method: 'Patch',
+          req: 'firstName? lastName?',
+          desc: 'This is the for updating the users first name or last name or both ',
+        },
       ];
       const table = document.querySelector('.table');
       table.innerHTML += routes
