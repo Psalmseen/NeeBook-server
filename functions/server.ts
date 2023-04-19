@@ -32,10 +32,7 @@ app.set('trust proxy', 1);
 app.use(router);
 app.use(fileUpload.single('image'));
 app.use('/auth', authRouter);
-app.use(
-  '/images',
-  express.static(path.join(__dirname, '..', '..', '..', '..', '..', 'images'))
-);
+app.use('/images', express.static(path.join(__dirname, 'images')));
 app.get('/', (_, res) => {
   res.sendFile(
     path.join(__dirname, '..', '..', '..', '..', '..', 'dist', 'index.html')
