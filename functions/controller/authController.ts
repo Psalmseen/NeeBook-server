@@ -119,15 +119,12 @@ export const uploadProfileImageController = async (
   try {
     const imageUrl = file!.path.split('\\').join('/');
     const user = await User.findById(userId);
-    const { secure_url } = await cloudinary.uploader.upload(
-      path.join(__dirname, '..', '..', '..', '..', '..', imageUrl),
-      {
-        public_id: `Neebook_${user?.firstName}_${user?.lastName}_${userId}`,
-        unique_filename: false,
-        folder: 'images',
-        overwrite: true,
-      }
-    );
+    const { secure_url } = await cloudinary.uploader.upload(`./${imageUrl}`, {
+      public_id: `Neebook_${user?.firstName}_${user?.lastName}_${userId}`,
+      unique_filename: false,
+      folder: 'images',
+      overwrite: true,
+    });
     fs.unlink(
       path.join(__dirname, '..', '..', '..', '..', '..', imageUrl),
       (err) => {
