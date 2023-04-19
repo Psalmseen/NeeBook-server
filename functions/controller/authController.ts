@@ -119,25 +119,28 @@ export const uploadProfileImageController = async (
   try {
     const imageUrl = file!.path.split('\\').join('/');
     const user = await User.findById(userId);
-    const { secure_url } = await cloudinary.uploader.upload(`./${imageUrl}`, {
-      public_id: `Neebook_${user?.firstName}_${user?.lastName}_${userId}`,
-      unique_filename: false,
-      folder: 'images',
-      overwrite: true,
-    });
-    fs.unlink(
-      path.join(__dirname, '..', '..', '..', '..', '..', imageUrl),
-      (err) => {
-        if (err) {
-          console.log(err);
-        }
-      }
-    );
-    if (!user?.imageUrl) {
-      user!.imageUrl = secure_url;
-      user?.save();
-    }
-    res.status(200).json({ message: 'Profile image upload successfully' });
+    const imagePath = `./${imageUrl}`;
+    // const { secure_url } = await cloudinary.uploader.upload(`./${imageUrl}`, {
+    //   public_id: `Neebook_${user?.firstName}_${user?.lastName}_${userId}`,
+    //   unique_filename: false,
+    //   folder: 'images',
+    //   overwrite: true,
+    // });
+    // fs.unlink(
+    //   path.join(__dirname, '..', '..', '..', '..', '..', imageUrl),
+    //   (err) => {
+    //     if (err) {
+    //       console.log(err);
+    //     }
+    //   }
+    // );
+    // if (!user?.imageUrl) {
+    //   user!.imageUrl = secure_url;
+    //   user?.save();
+    // }
+    res
+      .status(200)
+      .json({ message: 'Profile image upload successfully', url: imagePath });
   } catch (error) {
     next(error);
   }
