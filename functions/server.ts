@@ -2,12 +2,25 @@ import express from 'express';
 import serverless from 'serverless-http';
 import { router } from './routes/routeRoutes';
 import { authRouter } from './routes/authRoutes';
+import multer from 'multer';
 import mongoose from 'mongoose';
 import env from 'dotenv';
 import path from 'path';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-
+const storage = multer.diskStorage({
+  destination: (__, _, cb) => {
+    cb(null, './images');
+  },
+  filename: (_, file, cb) => {
+    cb(
+      null,
+      Date().split('GMT')[0].split(' ').join('_').split(':').join('-') +
+        file.originalname
+    );
+  },
+});
+const fileUpload = multer({ storage });
 env.config();
 const app = express();
 
@@ -17,6 +30,7 @@ app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.set('trust proxy', 1);
 
 app.use(router);
+app.use(fileUpload.single('image'));
 app.use('/auth', authRouter);
 app.use(
   '/images',
@@ -50,5 +64,5 @@ connect();
 export const handler = conn
   ? serverless(app)
   : () => {
-      console.log('Server stopedclear');
+      console.log('Server stopped');
     };

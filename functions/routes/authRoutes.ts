@@ -3,6 +3,7 @@ import {
   changePasswordController,
   logoutController,
   updateProfileCOntroller,
+  uploadProfileImageController,
 } from '../controller/authController';
 import { checkAccessTokenController } from '../controller/userController';
 import { isAuthorized } from '../utils/passport';
@@ -40,4 +41,10 @@ authRouter.put(
     ),
   isAuthorized,
   changePasswordController
+);
+
+authRouter.post(
+  '/upload-profile-image',
+  isAuthorized,
+  uploadProfileImageController
 );

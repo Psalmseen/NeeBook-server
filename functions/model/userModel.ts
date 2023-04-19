@@ -17,6 +17,8 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  imageUrl: String,
+
   accessToken: String,
   library: {
     type: [SchemaTypes.ObjectId],

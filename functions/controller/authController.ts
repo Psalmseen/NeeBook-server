@@ -1,8 +1,18 @@
+import fs from 'fs';
+import path from 'path';
 import { NextFunction, Response } from 'express';
 import { validationResult } from 'express-validator';
 import { IRequest } from '../utils/interfaces';
 import bcrypt from 'bcrypt';
 import User from '../model/userModel';
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true,
+});
+
 export const logoutController = async (
   req: IRequest,
   res: Response,
@@ -88,6 +98,46 @@ export const changePasswordController = async (
     res.status(200).json({ message: 'Password update successful' });
   } catch (error) {
     console.log(error);
+    next(error);
+  }
+};
+
+export const uploadProfileImageController = async (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { file, userId } = req;
+  // steps to follow
+  /* 
+   1. upload image to coludinary
+   2. if successful delete the image locally 
+   3, generate the image url 
+   4. change the new image url to the user image url
+  neebook_Samson_Oyebamiji_6358dd9bb4099bdaa27626e7.png
+  */
+  try {
+    const imageUrl = file!.path.split('\\').join('/');
+    const user = await User.findById(userId);
+    const { public_id } = await cloudinary.uploader.upload(imageUrl, {
+      public_id: `Neebook_${user?.firstName}_${user?.lastName}_${userId}`,
+      unique_filename: false,
+      overwrite: true,
+    });
+    fs.unlink(
+      path.join(__dirname, '..', '..', '..', '..', '..', imageUrl),
+      (err) => {
+        if (err) {
+          console.log(err);
+        }
+      }
+    );
+    if (!user?.imageUrl) {
+      user!.imageUrl = `https://res.cloudinary.com/dgwaylnxi/image/upload/v1681906950/${public_id}`;
+      user?.save();
+    }
+    res.status(200).json({ message: 'Profile image upload successfully' });
+  } catch (error) {
     next(error);
   }
 };
