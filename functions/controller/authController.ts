@@ -119,7 +119,7 @@ export const uploadProfileImageController = async (
   try {
     const imageUrl = file!.path.split('\\').join('/');
     const user = await User.findById(userId);
-    const { public_id } = await cloudinary.uploader.upload(imageUrl, {
+    const { secure_url } = await cloudinary.uploader.upload(imageUrl, {
       public_id: `Neebook_${user?.firstName}_${user?.lastName}_${userId}`,
       unique_filename: false,
       overwrite: true,
@@ -133,7 +133,7 @@ export const uploadProfileImageController = async (
       }
     );
     if (!user?.imageUrl) {
-      user!.imageUrl = `https://res.cloudinary.com/dgwaylnxi/image/upload/v1681906950/${public_id}`;
+      user!.imageUrl = secure_url;
       user?.save();
     }
     res.status(200).json({ message: 'Profile image upload successfully' });
