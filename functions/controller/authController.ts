@@ -117,7 +117,7 @@ export const uploadProfileImageController = async (
   neebook_Samson_Oyebamiji_6358dd9bb4099bdaa27626e7.png
   */
   try {
-    const imageUrl = file!.path.split('\\').join('/');
+    const imageUrl = file!.path; /* .split('\\').join('/') */
     const user = await User.findById(userId);
     const { secure_url } = await cloudinary.uploader.upload(
       path.join(__dirname, '..', '..', '..', '..', '..', imageUrl),
