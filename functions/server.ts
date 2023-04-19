@@ -10,7 +10,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 const storage = multer.diskStorage({
   destination: (__, _, cb) => {
-    cb(null, path.join(__dirname, '..', '..', '..', '..', '..', 'images'));
+    cb(null, './images');
   },
   filename: (_, file, cb) => {
     cb(
