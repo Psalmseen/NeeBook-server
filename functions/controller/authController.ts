@@ -156,17 +156,13 @@ export const sendVerificationEmailController = async (
       value: verifyToken,
     });
     await token.save();
-    nodeTransport.sendMail(
-      {
-        from: 'Samsonoyebamiji02@outlook.com',
-        to: user?.email as string,
-        subject: 'Verify you email',
-        html: `<h1 style="font-family:poppins; text-align:center"> Verify your email to complete your registration process</h1> <p style="font-family:poppins; text-align:center">To complete your regustartion process email verification is required. Click the link below to verify your email </p> <p style="font-family:poppins; text-align:center"><a style="font-family:poppins; text-align:center"  href="https://neebook-server.netlify.app/verify-email/${userId}/${verifyToken}" target="_blank"> Verify Email</a></p>`,
-      },
-      (err) => {
-        if (err) console.log(err);
-      }
-    );
+
+    await nodeTransport.sendMail({
+      from: 'Samsonoyebamiji02@outlook.com',
+      to: user?.email as string,
+      subject: 'Verify you email',
+      html: `<h1 style="font-family:poppins; text-align:center"> Verify your email to complete your registration process</h1> <p style="font-family:poppins; text-align:center">To complete your regustartion process email verification is required. Click the link below to verify your email </p> <p style="font-family:poppins; text-align:center"><a style="font-family:poppins; text-align:center"  href="https://neebook-server.netlify.app/verify-email/${userId}/${verifyToken}" target="_blank"> Verify Email</a></p>`,
+    });
 
     res.status(200).json({ message: 'Email verification request successful' });
   } catch (error) {
