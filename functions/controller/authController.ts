@@ -114,10 +114,12 @@ export const uploadProfileImageController = async (
    2. if successful delete the image locally 
    3, generate the image url 
    4. change the new image url to the user image url
-  neebook_Samson_Oyebamiji_6358dd9bb4099bdaa27626e7.png
+   
+   *NB: the controller works well locallly but not remotely
+  
   */
   try {
-    const imageUrl = file!.path; /* .split('\\').join('/') */
+    const imageUrl = file!.path;
     const user = await User.findById(userId);
     const { secure_url } = await cloudinary.uploader.upload(
       path.join(__dirname, '..', '..', '..', '..', '..', imageUrl),
@@ -144,4 +146,17 @@ export const uploadProfileImageController = async (
   } catch (error) {
     next(error);
   }
+};
+
+export const sendVerificationEmailController = async (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { userId } = req;
+
+  /* 
+  TODO:
+  * configure sending email to the user,s email
+  */
 };

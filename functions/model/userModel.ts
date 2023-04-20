@@ -19,6 +19,11 @@ const UserSchema = new Schema({
   },
   imageUrl: String,
 
+  emailVerified: {
+    type: String,
+    required: true,
+  },
+
   accessToken: String,
   library: {
     type: [SchemaTypes.ObjectId],
