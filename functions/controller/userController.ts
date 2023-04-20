@@ -3,6 +3,9 @@ import { validationResult } from 'express-validator/src/validation-result';
 import bcrypt from 'bcrypt';
 import jwt, { Secret } from 'jsonwebtoken';
 import User from '../model/userModel';
+import Token from '../model/token';
+import { IRequest } from '../utils/interfaces';
+import { log } from 'console';
 
 export const signupController = async (
   req: Request,
@@ -27,6 +30,7 @@ export const signupController = async (
       email: email.toLowerCase(),
       password: encryptedPassword,
       accessToken: '',
+      emailVerified: false,
     });
     const accessToken = jwt.sign(
       { userId: user._id },
@@ -42,9 +46,7 @@ export const signupController = async (
       password: userPassword,
       ...frontendUser
     } = user.toJSON();
-    res
-      .status(200)
-      .json({ message: 'Successful', user: { ...frontendUser, accessToken } });
+    res.status(200).json({ message: 'Successful', user: { ...frontendUser } });
   } catch (error) {
     console.log(error);
   }
@@ -99,4 +101,21 @@ export const loginController = async (
 export const checkAccessTokenController = async (req: any, res: any) => {
   const { accessToken } = req.cookie;
   res.status(200).json({ accessToken });
+};
+
+export const verifyEmailController = async (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { token, id } = req.params;
+  console.log('route hit', { token, id });
+  const storedToken = await Token.findOne({ userId: id, value: token });
+  if (!storedToken) {
+    return res.status(403);
+  }
+  const user = await User.findById(id);
+  user!.emailVerified = true;
+  user?.save();
+  res.status(200).redirect('https://google.com');
 };

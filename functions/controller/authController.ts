@@ -5,13 +5,10 @@ import { validationResult } from 'express-validator';
 import { IRequest } from '../utils/interfaces';
 import bcrypt from 'bcrypt';
 import User from '../model/userModel';
-const cloudinary = require('cloudinary').v2;
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
+import Token from '../model/token';
+import { uploadToCloudinary } from '../utils/cloudinary';
+import { nodeTransport } from '../utils/nodemailer';
+import { randomBytes } from 'crypto';
 
 export const logoutController = async (
   req: IRequest,
@@ -121,15 +118,12 @@ export const uploadProfileImageController = async (
   try {
     const imageUrl = file!.path;
     const user = await User.findById(userId);
-    const { secure_url } = await cloudinary.uploader.upload(
-      path.join(__dirname, '..', '..', '..', '..', '..', imageUrl),
-      {
-        public_id: `Neebook_${user?.firstName}_${user?.lastName}_${userId}`,
-        unique_filename: false,
-        folder: 'images',
-        overwrite: true,
-      }
+
+    const uploadUrl = await uploadToCloudinary(
+      imageUrl,
+      `Neebook_${user?.firstName}_${user?.lastName}_${userId}`
     );
+
     fs.unlink(
       path.join(__dirname, '..', '..', '..', '..', '..', imageUrl),
       (err) => {
@@ -139,7 +133,7 @@ export const uploadProfileImageController = async (
       }
     );
     if (!user?.imageUrl) {
-      user!.imageUrl = secure_url;
+      user!.imageUrl = uploadUrl;
       user?.save();
     }
     res.status(200).json({ message: 'Profile image upload successfully' });
@@ -154,9 +148,34 @@ export const sendVerificationEmailController = async (
   next: NextFunction
 ) => {
   const { userId } = req;
+  const verifyToken = randomBytes(16).toString('hex');
+  try {
+    const user = await User.findById(userId);
+    const token = new Token({
+      userId,
+      value: verifyToken,
+    });
+    await token.save();
+    nodeTransport.sendMail(
+      {
+        from: 'Samsonoyebamiji02@outlook.com',
+        to: user?.email as string,
+        subject: 'Verify you email',
+        html: `<h1 style="font-family:poppins; text-align:center"> Verify your email to complete your registration process</h1> <p style="font-family:poppins; text-align:center">To complete your regustartion process email verification is required. Click the link below to verify your email </p> <p style="font-family:poppins; text-align:center"><a style="font-family:poppins; text-align:center"  href="https://neebook-server.netlify.app/verify-email/${userId}/${verifyToken}" target="_blank"> Verify Email</a></p>`,
+      },
+      (err) => {
+        if (err) console.log(err);
+      }
+    );
+
+    res.status(200).json({ message: 'Email verification request successful' });
+  } catch (error) {
+    next(error);
+  }
 
   /* 
   TODO:
+  * generate a token and save it so you can come back to check it when the user comes back
   * configure sending email to the user,s email
   */
 };

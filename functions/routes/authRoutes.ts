@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   changePasswordController,
   logoutController,
+  sendVerificationEmailController,
   updateProfileCOntroller,
   uploadProfileImageController,
 } from '../controller/authController';
@@ -48,3 +49,5 @@ authRouter.post(
   isAuthorized,
   uploadProfileImageController
 );
+
+authRouter.post('/verify-email', isAuthorized, sendVerificationEmailController);

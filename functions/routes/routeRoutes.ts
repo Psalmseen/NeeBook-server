@@ -9,6 +9,7 @@ import {
 import {
   signupController,
   loginController,
+  verifyEmailController,
 } from '../controller/userController';
 export const router = Router();
 
@@ -70,3 +71,4 @@ router.post(
   ],
   loginController
 );
+router.get('/verify-email/:id/:token', verifyEmailController);
