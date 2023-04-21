@@ -109,13 +109,14 @@ export const verifyEmailController = async (
   next: NextFunction
 ) => {
   const { token, id } = req.params;
-  console.log('route hit', { token, id });
   const storedToken = await Token.findOne({ userId: id, value: token });
   if (!storedToken) {
     return res.status(403);
   }
+  storedToken.delete();
   const user = await User.findById(id);
   user!.emailVerified = true;
   user?.save();
+
   res.status(200).redirect('https://google.com');
 };

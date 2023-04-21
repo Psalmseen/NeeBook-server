@@ -5,6 +5,7 @@ import { validationResult } from 'express-validator';
 import { IRequest } from '../utils/interfaces';
 import bcrypt from 'bcrypt';
 import User from '../model/userModel';
+import nodemailer from 'nodemailer';
 import Token from '../model/token';
 import { uploadToCloudinary } from '../utils/cloudinary';
 import { nodeTransport } from '../utils/nodemailer';
@@ -157,14 +158,24 @@ export const sendVerificationEmailController = async (
     });
     await token.save();
 
-    await nodeTransport.sendMail({
-      from: 'Samsonoyebamiji02@outlook.com',
+    const info = await nodeTransport.sendMail({
+      from: 'Samsonoyebamiji02@gmail.com',
       to: user?.email as string,
       subject: 'Verify you email',
-      html: `<h1 style="font-family:poppins; text-align:center"> Verify your email to complete your registration process</h1> <p style="font-family:poppins; text-align:center">To complete your regustartion process email verification is required. Click the link below to verify your email </p> <p style="font-family:poppins; text-align:center"><a style="font-family:poppins; text-align:center"  href="https://neebook-server.netlify.app/verify-email/${userId}/${verifyToken}" target="_blank"> Verify Email</a></p>`,
+      html: `
+      <div style="max-width: 600px;  padding: 48px 24px; border-radius:8px; box-shadow:0 0 60px #0001">
+        <h1 style="font-family:Helvetica; color:#1d252d; margin-top:0">NEEBOOK</h1>
+        <h1 style="font-family:Helvetica; color:#1d252d">Verify your email</h1>
+        <p style="font-family:Helvetica; color:#9B9AA1; font-size: 20px; line-height:1.7">Hello <span style="text-transform: capitalize">${user?.firstName} ${user?.lastName}</span> ! To complete your registration email verification is required. <br/>Click the link below to verify your Email</p>
+        <a style="font-family:Helvetica; color:#9B9AA1; font-size: 20px; display:block; text-decoration:none; background:#38A169; color: #E4FDFF; padding: 16px; border-radius: 8px; text-align:center" href="https://neebook-server.netlify.app/verify-email/${userId}/${verifyToken}" target="_blank"> Verify email</a>
+        </div>
+       `,
     });
 
-    res.status(200).json({ message: 'Email verification request successful' });
+    res.status(200).json({
+      message: 'Email verification request successful',
+      messageID: info.messageId,
+    });
   } catch (error) {
     next(error);
   }
