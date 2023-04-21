@@ -97,7 +97,7 @@ router.get('/the-test', (req: any, res: any) => {
   res.redirect('http://localhost:3000');
 });
 router.post(
-  '/set-new-passowrd',
+  '/set-new-password',
   [
     body('password')
       .isLength({ min: 10, max: 128 })
