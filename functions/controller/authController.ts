@@ -64,7 +64,6 @@ export const updateProfileCOntroller = async (
       .status(200)
       .json({ message: 'User detail has been successfully updated' });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -95,7 +94,6 @@ export const changePasswordController = async (
     user?.save();
     res.status(200).json({ message: 'Password update successful' });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };

@@ -6,7 +6,6 @@ export const getBooksController = async (
   next: NextFunction
 ) => {
   const { name: query } = req.query;
-  console.log(query);
 
   try {
     const book = await Book.find({});

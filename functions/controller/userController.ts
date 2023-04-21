@@ -5,7 +5,6 @@ import jwt, { Secret } from 'jsonwebtoken';
 import User from '../model/userModel';
 import Token from '../model/token';
 import { IRequest } from '../utils/interfaces';
-import { log } from 'console';
 
 export const signupController = async (
   req: Request,
@@ -41,14 +40,14 @@ export const signupController = async (
     res.cookie('accessToken', accessToken, {
       httpOnly: true,
     });
-    const {
-      accessToken: userToken,
-      password: userPassword,
-      ...frontendUser
-    } = user.toJSON();
-    res.status(200).json({ message: 'Successful', user: { ...frontendUser } });
+    // const {
+    //   accessToken: userToken,
+    //   password: userPassword,
+    //   ...frontendUser
+    // } = user.toJSON();
+    res.status(200).json({ message: 'Signup successful' });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
@@ -72,6 +71,12 @@ export const loginController = async (
     if (!isEqual) {
       return res.status(403).json({ message: 'Password incorrect' });
     }
+
+    if (!user.emailVerified) {
+      return res.status(401).json({
+        message: 'Email not verified. Verify email before proceeding to login',
+      });
+    }
     const accessToken = jwt.sign(
       { userId: user._id },
       process.env.JWT_ACCESS_TOKEN_SECRET as Secret
@@ -90,10 +95,9 @@ export const loginController = async (
     });
     res.status(200).json({
       message: 'Login successful',
-      user: { ...frontendUser, accessToken },
+      user: { ...frontendUser },
     });
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };

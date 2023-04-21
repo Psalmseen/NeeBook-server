@@ -20,7 +20,7 @@ const UserSchema = new Schema({
   imageUrl: String,
 
   emailVerified: {
-    type: String,
+    type: Boolean,
     required: true,
   },
 
