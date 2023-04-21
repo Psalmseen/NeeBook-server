@@ -10,6 +10,9 @@ import {
   signupController,
   loginController,
   verifyEmailController,
+  requestForgetpassword,
+  verifyResetPasswordController,
+  setNewPasswordController,
 } from '../controller/userController';
 export const router = Router();
 
@@ -72,3 +75,42 @@ router.post(
   loginController
 );
 router.get('/verify-email/:id/:token', verifyEmailController);
+router.post(
+  '/request-reset-password',
+  [
+    body('email')
+      .isEmail()
+      .withMessage('invalid email address')
+      .isString()
+      .withMessage('Invalid Email address'),
+  ],
+  requestForgetpassword
+);
+
+router.get('/verify-reset-password/:id/:token', verifyResetPasswordController);
+router.get('/the-test', (req: any, res: any) => {
+  res.cookie('accessToken', 'Just to check if this will go to the page', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'none',
+  });
+  res.redirect('http://localhost:3000');
+});
+router.post(
+  '/set-new-passowrd',
+  [
+    body('password')
+      .isLength({ min: 10, max: 128 })
+      .withMessage('Password must contain 10 - 128 characters')
+      .isStrongPassword({
+        minLowercase: 1,
+        minNumbers: 1,
+        minSymbols: 1,
+        minUppercase: 1,
+      })
+      .withMessage(
+        'Must contain a lowercase, uppercase, a number and  a special character'
+      ),
+  ],
+  setNewPasswordController
+);
