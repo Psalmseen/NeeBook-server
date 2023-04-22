@@ -18,6 +18,14 @@ const bookSchema = new Schema({
     type: Number,
     required: true,
   },
+  reviewedBy: {
+    type: Number,
+    required: true,
+  },
+  totalReviews: {
+    type: Number,
+    required: true,
+  },
   rents: {
     type: Number,
     required: true,

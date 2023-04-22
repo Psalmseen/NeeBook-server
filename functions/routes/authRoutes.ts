@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   changePasswordController,
   logoutController,
+  rateBookController,
   sendVerificationEmailController,
   updateProfileCOntroller,
   uploadProfileImageController,
@@ -51,3 +52,18 @@ authRouter.post(
 );
 
 authRouter.post('/verify-email', isAuthorized, sendVerificationEmailController);
+authRouter.post(
+  '/rate-book',
+  [
+    body('rating').custom(async (value) => {
+      if (value < 0 || value > 5) {
+        throw new Error('Value not within range');
+      }
+      if (typeof value !== 'number') {
+        throw new Error('Rating must be a number');
+      }
+    }),
+  ],
+  isAuthorized,
+  rateBookController
+);

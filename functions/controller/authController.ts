@@ -5,8 +5,8 @@ import { validationResult } from 'express-validator';
 import { IRequest } from '../utils/interfaces';
 import bcrypt from 'bcrypt';
 import User from '../model/userModel';
-import nodemailer from 'nodemailer';
 import Token from '../model/token';
+import Book from '../model/bookModel';
 import { uploadToCloudinary } from '../utils/cloudinary';
 import { nodeTransport } from '../utils/nodemailer';
 import { randomBytes } from 'crypto';
@@ -183,4 +183,43 @@ export const sendVerificationEmailController = async (
   * generate a token and save it so you can come back to check it when the user comes back
   * configure sending email to the user,s email
   */
+};
+
+export const rateBookController = async (
+  req: IRequest,
+  res: Response,
+  next: NextFunction
+) => {
+  const { bookId, rating } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    const error = errors.array({ onlyFirstError: true });
+    return res.status(400).json({ message: error[0].msg });
+  }
+
+  try {
+    const book = await Book.findById(bookId);
+
+    if (!book) {
+      return res
+        .status(404)
+        .json({ message: 'Book not found please provide a valid book id' });
+    }
+
+    const originalReviewers = book.reviewedBy;
+    const originaltotalReviews = book.totalReviews;
+    const newReviewers = originalReviewers + 1;
+    let newReview = (originaltotalReviews + rating) / newReviewers;
+    newReview = Math.round(newReview * 10) / 10;
+    book.review = newReview;
+    book.reviewedBy = newReviewers;
+    book.totalReviews = originaltotalReviews + rating;
+    await book.save();
+    res.status(200).json({
+      message: 'Successful',
+      book,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
